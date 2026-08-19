@@ -1,24 +1,39 @@
 import os
-import mysql.connector
 from database import get_db_connection
 
 def run_schema(conn):
     schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")
-    if os.path.exists(schema_path):
-        print("Creating tables from schema.sql...")
-        with open(schema_path, "r", encoding="utf-8") as f:
-            sql = f.read()
-        cur = conn.cursor()
-        for statement in sql.split(";"):
-            stmt = statement.strip()
-            if stmt:
-                try:
-                    cur.execute(stmt)
-                except Exception as e:
-                    print(f"Schema notice: {e}")
-        conn.commit()
-        cur.close()
-        print("Schema initialized successfully.")
+    if not os.path.exists(schema_path):
+        print("schema.sql not found at", schema_path)
+        return
+
+    with open(schema_path, "r", encoding="utf-8") as f:
+        sql = f.read()
+
+    # Strip CREATE DATABASE and USE statements so tables are created in the active database
+    clean_lines = []
+    for line in sql.splitlines():
+        trimmed = line.strip().upper()
+        if trimmed.startswith("CREATE DATABASE") or trimmed.startswith("USE "):
+            continue
+        clean_lines.append(line)
+    
+    clean_sql = "\n".join(clean_lines)
+
+    cur = conn.cursor()
+    for statement in clean_sql.split(";"):
+        stmt = statement.strip()
+        if stmt:
+            try:
+                cur.execute(stmt)
+            except Exception as e:
+                print(f"Notice on stmt: {e}")
+    conn.commit()
+    
+    cur.execute("SHOW TABLES")
+    tables = [t[0] for t in cur.fetchall()]
+    print("Tables successfully created in database:", tables)
+    cur.close()
 
 def seed():
     conn = get_db_connection()
@@ -26,10 +41,8 @@ def seed():
         print("Database connection failed")
         return
     
-    # 1. First create all database tables
     run_schema(conn)
     
-    # 2. Seed initial admin user
     try:
         from werkzeug.security import generate_password_hash
         cur = conn.cursor(dictionary=True)
