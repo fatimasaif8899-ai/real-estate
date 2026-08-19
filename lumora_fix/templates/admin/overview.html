@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}LUMORA | Admin{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar admin-side anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">✦ LUMORA<br><small>ADMIN STUDIO</small></a>
+<div class="sidebar-section-label">Admin</div>
+<a href="{{url_for('admin_overview')}}">▦ Dashboard / Overview</a>
+<a href="{{url_for('admin_library')}}">📖 Books / Novels / Stories</a>
+<a href="{{url_for('admin_categories')}}">🏷 Categories</a>
+<a href="{{url_for('admin_users')}}">♡ Users</a>
+<a href="{{url_for('admin_settings')}}">⚙ Settings</a>
+<a href="{{url_for('dashboard_overview')}}">◉ My Dashboard</a>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main"><span class="kawaii-label">Control room</span><h1>Admin Overview</h1><div class="stat-grid"><div><b>{{books}}</b><span>Books</span></div><div><b>{{users}}</b><span>Users</span></div><div><b>{{messages}}</b><span>Messages</span></div></div><div class="dashboard-callout"><h2>Manage the collection.</h2><div class="button-row"><a class="btn-editorial btn-dark" href="{{url_for('admin_library')}}">Manage Books</a><a class="btn-editorial btn-outline" href="{{url_for('admin_users')}}">Manage Users</a><a class="btn-editorial btn-outline" href="{{url_for('admin_settings')}}">Site Settings</a></div></div></main></div>{% endblock %}

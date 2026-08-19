@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}LUMORA | Dashboard{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">LUMORA</a>
+<div class="sidebar-section-label">Dashboard</div>
+<a href="{{url_for('dashboard_overview')}}">▦ Overview</a>
+<a href="{{url_for('dashboard_library')}}">📖 My Library</a>
+<a href="{{url_for('dashboard_reading')}}">◷ Reading</a>
+<a href="{{url_for('dashboard_profile')}}">◎ Profile</a>
+{% if session.get('role')=='admin' %}<a href="{{url_for('admin_overview')}}">⚙ Admin</a>{% endif %}
+<button id="theme-toggle-dash" type="button">◑ Theme</button>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main"><span class="kawaii-label">Your reading room</span><h1>Welcome, {{session.user_name}}.</h1><div class="stat-grid"><div><b>{{stats.saved}}</b><span>Saved books</span></div><div><b>{{stats.collections}}</b><span>Collections</span></div><div><b>{{stats.read}}</b><span>Books read</span></div></div><div class="dashboard-callout"><span class="kawaii-label">Continue your journey</span><h2>Pick up where curiosity left you.</h2><a class="btn-editorial btn-dark" href="{{url_for('library')}}">Browse Library</a></div></main></div>{% endblock %}

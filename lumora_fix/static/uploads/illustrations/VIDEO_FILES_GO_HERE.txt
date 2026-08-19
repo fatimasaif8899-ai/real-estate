@@ -1,0 +1,13 @@
+LUMORA VIDEO SETUP
+
+Hero video:
+- Put one or more videos here whose filename contains "hero".
+- Recommended: hero-library.mp4 (H.264/AAC, 16:9 or 1920x1080).
+
+About video:
+- Put one or more videos here whose filename contains "about".
+- Recommended: about-library.mp4 (H.264/AAC, portrait or 4:5).
+
+The website automatically scans this folder. You do NOT need to edit HTML.
+MP4 and WEBM are recommended for browser compatibility. MOV is accepted but may not play in every browser.
+You can also upload the two videos from Admin -> Settings.

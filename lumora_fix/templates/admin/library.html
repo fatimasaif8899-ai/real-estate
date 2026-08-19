@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}LUMORA | Admin Library{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar admin-side anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">✦ LUMORA<br><small>ADMIN STUDIO</small></a>
+<div class="sidebar-section-label">Admin</div>
+<a href="{{url_for('admin_overview')}}">▦ Dashboard / Overview</a>
+<a href="{{url_for('admin_library')}}">📖 Books / Novels / Stories</a>
+<a href="{{url_for('admin_categories')}}">🏷 Categories</a>
+<a href="{{url_for('admin_users')}}">♡ Users</a>
+<a href="{{url_for('admin_settings')}}">⚙ Settings</a>
+<a href="{{url_for('dashboard_overview')}}">◉ My Dashboard</a>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main"><div class="section-head"><div><span class="kawaii-label">Content studio</span><h1>Books, Novels & Stories</h1><p>Every item can have its own category, cover file, reading source, PDF and EPUB.</p></div><div class="button-row"><a class="btn-editorial btn-dark" href="{{url_for('admin_add_book')}}">＋ Add Book / Novel / Story</a><a class="btn-editorial btn-outline" href="{{url_for('admin_categories')}}">＋ Add Category</a></div></div><div class="admin-book-grid">{% for b in books %}<article class="admin-book-card"><img src="{{b.cover_url}}" alt="{{b.title}}"><div><span class="kawaii-label">{{b.language or 'English'}} · {{b.pub_year or 'classic'}}</span><h2>{{b.title}}</h2><p>{{b.author_name or 'Unknown author'}}</p><div class="admin-card-actions"><a class="mini-btn" href="{{url_for('admin_edit_book',book_id=b.id)}}">✎ Edit</a><form method="post" action="{{url_for('admin_delete_book',book_id=b.id)}}"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><button class="mini-btn danger">🗑 Delete</button></form><a class="mini-btn" href="{{url_for('read_book',book_id=b.id)}}">📖 Read</a></div></div></article>{% else %}<div class="empty-state"><h3>No books yet.</h3><a class="btn-editorial btn-dark" href="{{url_for('admin_add_book')}}">Add the first book</a></div>{% endfor %}</div></main></div>{% endblock %}

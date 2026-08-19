@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}LUMORA | Admin Users{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar admin-side anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">✦ LUMORA<br><small>ADMIN STUDIO</small></a>
+<div class="sidebar-section-label">Admin</div>
+<a href="{{url_for('admin_overview')}}">▦ Dashboard / Overview</a>
+<a href="{{url_for('admin_library')}}">📖 Books / Novels / Stories</a>
+<a href="{{url_for('admin_categories')}}">🏷 Categories</a>
+<a href="{{url_for('admin_users')}}">♡ Users</a>
+<a href="{{url_for('admin_settings')}}">⚙ Settings</a>
+<a href="{{url_for('dashboard_overview')}}">◉ My Dashboard</a>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main"><span class="kawaii-label">Accounts</span><h1>User Management</h1><div class="admin-table"><div class="table-row table-head"><span>User</span><span>Email</span><span>Role</span><span>Actions</span></div>{% for u in users %}<div class="table-row"><span><strong>{{u.name}}</strong><small>Joined {{u.created_at.strftime('%b %d, %Y')}}</small></span><span>{{u.email}}</span><span><form method="post" action="{{url_for('admin_change_role',user_id=u.id)}}" class="role-form"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><select name="role" onchange="this.form.submit()"><option value="user" {% if u.role=='user' %}selected{% endif %}>User</option><option value="admin" {% if u.role=='admin' %}selected{% endif %}>Admin</option></select></form></span><span>{% if u.id != session.user_id %}<form method="post" action="{{url_for('admin_delete_user',user_id=u.id)}}" onsubmit="return confirm('Delete this user?')"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><button class="mini-btn danger">Delete</button></form>{% else %}<small>Current account</small>{% endif %}</span></div>{% endfor %}</div></main></div>{% endblock %}

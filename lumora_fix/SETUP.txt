@@ -1,0 +1,31 @@
+LUMORA — STORY GARDEN UPDATE
+
+Import schema.sql, then run: python seed.py
+Admin: admin@lumora.lib / Admin123!
+
+VIDEOS
+- Put hero-library-anime.mp4 and about-reading-anime.mp4 in static/uploads/illustrations, OR upload them from Admin > Settings.
+- Supported: MP4, WEBM, OGG, MOV.
+- The app scans the folder, so the video does not depend on one exact filename.
+
+BOOK COVERS
+- Admin > Library > Add Book/Edit Book has a real cover-file upload.
+- Uploaded covers go to static/uploads/covers.
+
+FOOTER
+- Footer appears only on Home, Library, Collections, About and Contact.
+- Login/Register, Dashboard and Admin pages have no footer.
+
+DESIGN
+- Playful anime/stationery/illustrated-book style.
+- Pastel colour combinations, doodles, rounded cards, playful sidebars and mixed display fonts.
+- Categories include children’s stories, Urdu novels, English novels, romance, mystery, fantasy, adventure, poetry, classics, philosophy, horror/gothic, YA, history, science and self growth.
+
+VIDEO NAMES
+- For the Home hero, use a filename beginning with "hero", e.g. hero-library-anime.mp4.
+- For the About page, use a filename beginning with "about", e.g. about-reading-anime.mp4.
+- If only one video exists, LUMORA uses it as a fallback in both locations.
+- MP4 (H.264/AAC) is recommended for Chrome/Edge/Firefox. WEBM is also supported.
+
+
+VIDEO UPDATE: Replaced hero-library-anime.mp4 and about-reading-anime.mp4 with original anime-inspired illustrated library animations. No template, route, database, or navigation changes were made.

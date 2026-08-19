@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}LUMORA | Profile{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">LUMORA</a>
+<div class="sidebar-section-label">Dashboard</div>
+<a href="{{url_for('dashboard_overview')}}">▦ Overview</a>
+<a href="{{url_for('dashboard_library')}}">📖 My Library</a>
+<a href="{{url_for('dashboard_reading')}}">◷ Reading</a>
+<a href="{{url_for('dashboard_profile')}}">◎ Profile</a>
+{% if session.get('role')=='admin' %}<a href="{{url_for('admin_overview')}}">⚙ Admin</a>{% endif %}
+<button id="theme-toggle-dash" type="button">◑ Theme</button>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main narrow"><span class="kawaii-label">Your account</span><h1>Edit Profile</h1><div class="profile-head">{% if user.profile_pic!='default.png' %}<img src="{{url_for('static',filename='uploads/avatars/'+user.profile_pic)}}" alt="Profile">{% else %}<div class="avatar-placeholder">{{user.name[0]|upper}}</div>{% endif %}<div><h2>{{user.name}}</h2><p>{{user.email}}</p></div></div><form class="editorial-form" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><label>Display Name</label><input name="name" value="{{user.name}}" required><label>Profile Photo</label><input type="file" name="profile_pic" accept=".png,.jpg,.jpeg,.webp"><label>New Password</label><input type="password" name="password" minlength="6" placeholder="Leave blank to keep current password"><button class="btn-editorial btn-dark">Save Changes</button></form></main></div>{% endblock %}

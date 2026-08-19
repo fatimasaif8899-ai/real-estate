@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}LUMORA | Categories{% endblock %}
+{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar admin-side anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">✦ LUMORA<br><small>ADMIN STUDIO</small></a>
+<div class="sidebar-section-label">Admin</div>
+<a href="{{url_for('admin_overview')}}">▦ Dashboard / Overview</a>
+<a href="{{url_for('admin_library')}}">📖 Books / Novels / Stories</a>
+<a href="{{url_for('admin_categories')}}">🏷 Categories</a>
+<a href="{{url_for('admin_users')}}">♡ Users</a>
+<a href="{{url_for('admin_settings')}}">⚙ Settings</a>
+<a href="{{url_for('dashboard_overview')}}">◉ My Dashboard</a>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main"><span class="kawaii-label">shelves & genres</span><h1>Book Categories</h1><form class="category-admin-form" method="post"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><input name="name" placeholder="e.g. Urdu Stories, Children's Books" required><input name="slug" placeholder="optional-slug"><button class="btn-editorial btn-dark">＋ Add Category</button></form><div class="category-admin-grid">{% for c in categories %}<div class="admin-category-card"><span>✦</span><h2>{{c.name}}</h2><small>{{c.book_count}} books · {{c.slug}}</small><form method="post" action="{{url_for('admin_delete_category',category_id=c.id)}}"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><button class="mini-btn danger">Delete</button></form></div>{% endfor %}</div></main></div>{% endblock %}

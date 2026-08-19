@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}LUMORA | Reading{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">LUMORA</a>
+<div class="sidebar-section-label">Dashboard</div>
+<a href="{{url_for('dashboard_overview')}}">▦ Overview</a>
+<a href="{{url_for('dashboard_library')}}">📖 My Library</a>
+<a href="{{url_for('dashboard_reading')}}">◷ Reading</a>
+<a href="{{url_for('dashboard_profile')}}">◎ Profile</a>
+{% if session.get('role')=='admin' %}<a href="{{url_for('admin_overview')}}">⚙ Admin</a>{% endif %}
+<button id="theme-toggle-dash" type="button">◑ Theme</button>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main"><span class="kawaii-label">Your journey</span><h1>Reading History</h1><div class="reading-list">{% for item in history %}<article class="reading-item"><img src="{{item.cover_url}}" alt="{{item.title}}"><div><span class="kawaii-label">{{item.author_name}}</span><h3>{{item.title}}</h3><small>Last read {{item.last_read.strftime('%b %d, %Y %I:%M %p')}}</small><div class="progress-row"><input type="range" min="0" max="100" value="{{item.progress}}" oninput="document.getElementById('p{{item.id}}').textContent=this.value+'%'" onchange="updateProgress({{item.id}},this.value)"><b id="p{{item.id}}">{{item.progress}}%</b></div></div><a class="mini-btn" href="{{url_for('library')}}?book={{item.id}}">Continue</a></article>{% else %}<div class="empty-state"><h3>No reading activity yet.</h3><p>Open a book and press Read Now.</p></div>{% endfor %}</div></main></div>{% endblock %}{% block scripts %}<script>async function updateProgress(id,value){const r=await fetch('/update-progress/'+id,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':window.LUMORA_CSRF},body:JSON.stringify({progress:value})});if(!r.ok)alert('Could not save progress.');}</script>{% endblock %}

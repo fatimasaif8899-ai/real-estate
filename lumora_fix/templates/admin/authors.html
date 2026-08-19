@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}LUMORA | Authors{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar admin-side anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">✦ LUMORA<br><small>ADMIN STUDIO</small></a>
+<div class="sidebar-section-label">Admin</div>
+<a href="{{url_for('admin_overview')}}">▦ Dashboard / Overview</a>
+<a href="{{url_for('admin_library')}}">📖 Books / Novels / Stories</a>
+<a href="{{url_for('admin_categories')}}">🏷 Categories</a>
+<a href="{{url_for('admin_users')}}">♡ Users</a>
+<a href="{{url_for('admin_settings')}}">⚙ Settings</a>
+<a href="{{url_for('dashboard_overview')}}">◉ My Dashboard</a>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main narrow"><a class="back-link" href="{{url_for('admin_library')}}">← Back to Library</a><span class="kawaii-label">Content studio</span><h1>Authors</h1><p class="dashboard-subtitle">Create authors once, then select them when adding or editing any book, novel or story.</p><div class="upload-card"><h2>✍ Add New Author</h2><form method="post" class="inline-form-row"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><input name="name" required maxlength="200" placeholder="Author name, e.g. Jane Austen"><button class="btn-editorial btn-dark">＋ Add Author</button></form></div><div class="admin-book-grid">{% for a in authors %}<article class="admin-book-card"><div><span class="kawaii-label">{{a.book_count}} title{% if a.book_count != 1 %}s{% endif %}</span><h2>{{a.name}}</h2><div class="admin-card-actions"><form method="post" action="{{url_for('admin_delete_author',author_id=a.id)}}" onsubmit="return confirm('Delete this author? Books will keep their titles but will show Unknown author until another author is selected.');"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><button class="mini-btn danger">🗑 Delete</button></form></div></div></article>{% else %}<div class="empty-state"><h3>No authors yet.</h3><p>Add your first author above.</p></div>{% endfor %}</div></main></div>{% endblock %}

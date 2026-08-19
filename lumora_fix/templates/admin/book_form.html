@@ -1,0 +1,105 @@
+{% extends "base.html" %}{% block title %}LUMORA | {{'Edit' if edit_mode else 'Add'}} Book{% endblock %}{% block content %}<div class="dashboard-layout"><aside class="dashboard-sidebar admin-side anime-sidebar">
+<a class="dash-logo" href="{{url_for('home')}}">✦ LUMORA<br><small>ADMIN STUDIO</small></a>
+<div class="sidebar-section-label">Admin</div>
+<a href="{{url_for('admin_overview')}}">▦ Dashboard / Overview</a>
+<a href="{{url_for('admin_library')}}">📖 Books / Novels / Stories</a>
+<a href="{{url_for('admin_categories')}}">🏷 Categories</a>
+<a href="{{url_for('admin_users')}}">♡ Users</a>
+<a href="{{url_for('admin_settings')}}">⚙ Settings</a>
+<a href="{{url_for('dashboard_overview')}}">◉ My Dashboard</a>
+<a href="{{url_for('logout')}}">→ Logout</a>
+</aside><button class="mobile-dash-btn" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('open')">☰</button><main class="dashboard-main narrow"><a class="back-link" href="{{url_for('admin_library')}}">← Admin Library</a><span class="kawaii-label">Catalog studio</span><h1>{{'Edit Book / Novel / Story' if edit_mode else 'Add Book / Novel / Story'}}</h1><p class="dashboard-subtitle">Give every title its own cover, genre, language and reading/download files.</p><form class="editorial-form" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><label>Title</label><input name="title" value="{{book.title or ''}}" required><label>Author</label><div class="inline-form-row"><select name="author_id" id="author_id"><option value="">Select author</option>{% for a in authors %}<option value="{{a.id}}" {% if book.author_id==a.id %}selected{% endif %}>{{a.name}}</option>{% endfor %}</select><button type="button" class="mini-btn" id="quick-add-author">＋ New Author</button></div><p class="form-hint" id="author-status">Choose an existing author, or click <b>＋ New Author</b> to create one immediately. The new author is saved and selected automatically.</p><label>Description</label><textarea name="description" rows="5">{{book.description or ''}}</textarea><div class="upload-card"><h2>🖼 Book Cover</h2><p>Use a different cover for every title. Uploading a file replaces the URL.</p><label>Cover file</label><input type="file" id="cover_file" name="cover_file" accept="image/png,image/jpeg,image/webp,image/gif"><label>Or Cover URL</label><input type="url" id="cover_url" name="cover_url" value="{{book.cover_url or ''}}" placeholder="https://example.com/book-cover.jpg" autocomplete="off"><div class="cover-url-preview" id="cover-url-preview" aria-live="polite"><div class="cover-preview-media"><img id="cover-preview-image" src="{{book.cover_url or ''}}" alt="Book cover preview" {% if not book.cover_url %}hidden{% endif %}></div><div class="cover-preview-copy"><strong id="cover-preview-title">{% if book.cover_url %}Current cover preview{% else %}Cover preview{% endif %}</strong><span id="cover-preview-status">{% if book.cover_url %}Checking image…{% else %}Paste a direct image URL or choose a cover file to preview it before saving.{% endif %}</span></div></div></div><label>Categories / Type</label><div class="checkbox-group">{% for c in categories %}<label><input type="checkbox" name="categories" value="{{c.id}}" {% if c.id in book_cats %}checked{% endif %}> {{c.name}}</label>{% endfor %}</div><p class="form-hint">Select one or several: Children's Stories, Urdu Novels, English Novels, Romance, Mystery, Fantasy, Poetry, History, Science, etc. Create new genres from <a href="{{url_for('admin_categories')}}">Categories</a>.</p><label>ISBN</label><input name="isbn" value="{{book.isbn or ''}}"><label>Publisher</label><input name="publisher" value="{{book.publisher or ''}}"><label>Publication Year</label><input type="number" name="pub_year" value="{{book.pub_year or ''}}"><label>Language</label><input name="language" value="{{book.language or 'English'}}"><label>Source</label><select name="source_id"><option value="">Select source</option>{% for s in sources %}<option value="{{s.id}}" {% if book.source_id==s.id %}selected{% endif %}>{{s.name}}</option>{% endfor %}</select><label>License</label><input name="license_info" value="{{book.license_info or 'Public Domain'}}"><div class="upload-card"><h2>📖 Reading & Download Files</h2><p>Upload the actual PDF/EPUB so the book can be opened and downloaded from LUMORA.</p><label>Read URL (optional external full text)</label><input type="url" name="read_url" value="{{book.read_url or ''}}"><label>PDF file</label><input type="file" name="pdf_file" accept="application/pdf"><label>Or PDF URL</label><input type="url" name="pdf_url" value="{{book.pdf_url or ''}}"><label>EPUB file</label><input type="file" name="epub_file" accept="application/epub+zip,.epub"><label>Or EPUB URL</label><input type="url" name="epub_url" value="{{book.epub_url or ''}}"></div><label class="check-label"><input type="checkbox" name="is_featured" {% if book.is_featured %}checked{% endif %}> Feature this title on the home page</label><div class="form-action-bar"><a class="btn-editorial btn-outline" href="{{url_for('admin_library')}}">Cancel</a><button class="btn-editorial btn-dark">{{'Save Changes' if edit_mode else '＋ Add to Library'}}</button></div></form></main></div>{% endblock %}{% block scripts %}<div class="author-modal-backdrop" id="authorModal" aria-hidden="true">
+  <div class="author-modal-card" role="dialog" aria-modal="true" aria-labelledby="author-modal-title">
+    <button type="button" class="author-modal-close" id="authorModalClose" aria-label="Close">×</button>
+    <div class="author-modal-icon">✍</div>
+    <span class="kawaii-label">Content studio</span>
+    <h2 id="author-modal-title">Add a New Author</h2>
+    <p class="author-modal-copy">Create the author here and LUMORA will select them for this book automatically.</p>
+    <label class="author-modal-label" for="new-author-name">Author name</label>
+    <input class="author-modal-input" id="new-author-name" type="text" maxlength="200" autocomplete="off" placeholder="e.g. Jane Austen">
+    <p class="author-modal-error" id="author-modal-error" role="alert"></p>
+    <div class="author-modal-actions">
+      <button type="button" class="btn-editorial btn-outline" id="authorModalCancel">Cancel</button>
+      <button type="button" class="btn-editorial btn-dark" id="authorModalSave">＋ Add Author</button>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const btn=document.getElementById('quick-add-author');
+  const select=document.getElementById('author_id');
+  const status=document.getElementById('author-status');
+  const modal=document.getElementById('authorModal');
+  const input=document.getElementById('new-author-name');
+  const save=document.getElementById('authorModalSave');
+  const cancel=document.getElementById('authorModalCancel');
+  const close=document.getElementById('authorModalClose');
+  const error=document.getElementById('author-modal-error');
+  if(!btn || !select || !modal) return;
+
+  function openAuthorModal(){
+    error.textContent='';
+    input.value='';
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(()=>input.focus(),80);
+  }
+  function closeAuthorModal(){
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden','true');
+    btn.focus();
+  }
+  function setBusy(busy){
+    save.disabled=busy;
+    cancel.disabled=busy;
+    close.disabled=busy;
+    save.textContent=busy ? 'Saving…' : '＋ Add Author';
+  }
+
+  btn.addEventListener('click', openAuthorModal);
+  cancel.addEventListener('click', closeAuthorModal);
+  close.addEventListener('click', closeAuthorModal);
+  modal.addEventListener('click', function(e){ if(e.target===modal) closeAuthorModal(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && modal.classList.contains('active')) closeAuthorModal();
+    if(e.key==='Enter' && modal.classList.contains('active') && document.activeElement===input){
+      e.preventDefault();
+      save.click();
+    }
+  });
+
+  save.addEventListener('click', async function(){
+    const name=input.value.trim();
+    error.textContent='';
+    if(!name){
+      error.textContent='Please enter an author name.';
+      input.focus();
+      return;
+    }
+    setBusy(true);
+    const fd=new FormData();
+    fd.append('name',name);
+    fd.append('csrf_token',window.LUMORA_CSRF || '');
+    try {
+      const r=await fetch('{{url_for("admin_quick_add_author")}}',{
+        method:'POST',
+        body:fd,
+        headers:{'X-CSRF-Token':window.LUMORA_CSRF || ''}
+      });
+      const data=await r.json();
+      if(!r.ok || !data.ok) throw new Error(data.error || 'Could not save author.');
+      let option=Array.from(select.options).find(o=>o.value===String(data.id));
+      if(!option){ option=new Option(data.name,data.id); select.add(option); }
+      select.value=String(data.id);
+      status.textContent=data.existing
+        ? 'This author already existed and is now selected.'
+        : 'Author saved successfully and selected for this book.';
+      closeAuthorModal();
+    } catch(err) {
+      error.textContent=err.message || 'Could not save author. Please try again.';
+    } finally {
+      setBusy(false);
+    }
+  });
+});
+</script>{% endblock %}
